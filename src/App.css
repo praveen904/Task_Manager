@@ -1,38 +1,93 @@
-.App {
+body {
+  background-color: #eef1f5;
+  font-family: Arial, sans-serif;
+}
+
+/* Main box */
+.container {
+  width: 450px;
+  margin: 40px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Title */
+h2 {
   text-align: center;
+  margin-bottom: 15px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Inputs */
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+textarea {
+  resize: none;
+  height: 60px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+/* Add button */
+button {
+  padding: 7px 12px;
+  margin-top: 12px;
+  margin-right: 5px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
   color: white;
+  cursor: pointer;
+  font-size: 13px;
 }
 
-.App-link {
-  color: #61dafb;
+button:hover {
+  background-color: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Task card */
+.task {
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 5px;
+}
+
+/* Task title */
+.task b {
+  font-size: 15px;
+}
+
+/* Task details */
+.task p {
+  margin: 4px 0;
+  font-size: 13px;
+}
+
+/* Dates */
+.task small {
+  color: #666;
+  font-size: 11px;
+}
+
+/* Done & delete buttons */
+.task button {
+  background-color: #28a745;
+}
+
+.task button:last-child {
+  background-color: #dc3545;
+}
+
+.task button:hover {
+  opacity: 0.9;
 }
