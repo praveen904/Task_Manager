@@ -9,17 +9,23 @@ function App() {
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
 
+  const priorityOrder = {
+    High: 1,
+    Medium: 2,
+    Low: 3
+  };
+
   const addTask = () => {
-    if (title === "") return;
+    if (title.trim() === "") return;
 
     const now = new Date().toLocaleString();
 
     const newTask = {
       id: Date.now(),
-      title: title,
+      title,
       description: desc,
-      priority: priority,
-      dueDate: dueDate,
+      priority,
+      dueDate,
       status: "Pending",
       createdAt: now,
       updatedAt: now
@@ -82,24 +88,28 @@ function App() {
 
       <button onClick={addTask}>Add Task</button>
 
-      {tasks.length === 0 && <p>No tasks added</p>}
+      {tasks.length === 0 && <p className="empty">No tasks added</p>}
 
-      {tasks.map(task => (
-        <div key={task.id} className="task">
-          <b>{task.title}</b>
-          <p>{task.description}</p>
+      {[...tasks]
+        .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+        .map(task => (
+          <div key={task.id} className="task">
+            <b>{task.title}</b>
+            <p>{task.description}</p>
 
-          <p>Priority: {task.priority}</p>
-          <p>Due Date: {task.dueDate || "Not set"}</p>
-          <p>Status: {task.status}</p>
+            <p><strong>Priority:</strong> {task.priority}</p>
+            <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
+            <p><strong>Status:</strong> {task.status}</p>
 
-          <small>Created At: {task.createdAt}</small><br />
-          <small>Updated At: {task.updatedAt}</small><br /><br />
+            <small>Created At: {task.createdAt}</small><br />
+            <small>Updated At: {task.updatedAt}</small><br /><br />
 
-          <button onClick={() => markDone(task.id)}>Done</button>
-          <button onClick={() => deleteTask(task.id)}>Delete</button>
-        </div>
-      ))}
+            <button onClick={() => markDone(task.id)}>Done</button>
+            <button className="delete" onClick={() => deleteTask(task.id)}>
+              Delete
+            </button>
+          </div>
+        ))}
     </div>
   );
 }
