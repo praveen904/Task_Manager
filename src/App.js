@@ -4,13 +4,12 @@ import "./App.css";
 function App() {
   const [tasks, setTasks] = useState([]);
 
-  // Add task states
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
 
-  // Search & filter (TASK LIST side)
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
@@ -62,7 +61,6 @@ function App() {
 
   return (
     <div className="page">
-      {/* LEFT SIDE */}
       <div className="left">
         <h2>Add Task</h2>
 
@@ -94,11 +92,9 @@ function App() {
         <button onClick={addTask}>Add Task</button>
       </div>
 
-      {/* RIGHT SIDE */}
       <div className="right">
         <h2>Task List</h2>
 
-        {/* SEARCH & FILTERS */}
         <div className="filters">
           <input
             type="text"

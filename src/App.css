@@ -69,7 +69,7 @@ textarea {
 /* Narrow search & filter */
 .filters input,
 .filters select {
-  width: 140px;     /* 👈 BREADTH kammi */
+  width: 140px;     
   height: 34px;
   padding: 6px 8px;
   font-size: 13px;
