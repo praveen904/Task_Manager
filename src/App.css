@@ -1,9 +1,11 @@
 body {
+  margin: 0;
+  padding: 0;
   background-color: #eef1f5;
   font-family: Arial, sans-serif;
 }
 
-/* Page split */
+/* Page layout */
 .page {
   display: flex;
   gap: 20px;
@@ -14,7 +16,7 @@ body {
 .left {
   width: 35%;
   background: #ffffff;
-  padding: 20px;
+  padding: 18px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -23,43 +25,70 @@ body {
 .right {
   width: 65%;
   background: #ffffff;
-  padding: 20px;
+  padding: 18px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* Headings */
 h2 {
   margin-bottom: 10px;
 }
 
 /* Inputs */
 input,
-textarea,
 select {
-  width: 100%;
-  padding: 8px;
+  height: 34px;
+  padding: 6px 8px;
   margin-top: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 textarea {
   resize: none;
   height: 60px;
+  width: 100%;
+} 
+
+/* Add task inputs full width */
+.left input,
+.left select,
+.left textarea {
+  width: 100%;
 }
 
-/* Buttons */
+/* Filters row */
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+/* Narrow search & filter */
+.filters input,
+.filters select {
+  width: 140px;     /* 👈 BREADTH kammi */
+  height: 34px;
+  padding: 6px 8px;
+  font-size: 13px;
+}  
+
+/* Buttons small */
 button {
-  padding: 7px 12px;
-  margin-top: 12px;
-  margin-right: 5px;
+  height: 34px;
+  line-height: 34px;
+  padding: 0 12px;
+  margin-top: 8px;
+  margin-right: 4px;
   border: none;
   border-radius: 4px;
-  background-color: #19b102;
+  background-color: #007bff;
   color: white;
   cursor: pointer;
-}
+  font-size: 13px;
+}  
 
 button:hover {
   opacity: 0.9;
@@ -75,12 +104,14 @@ button:hover {
 }
 
 .task b {
-  font-size: 15px;
+  font-size: 14px;
+  display: block;
+  margin-bottom: 8px;
 }
 
 .task p {
   margin: 4px 0;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .task small {
@@ -88,19 +119,30 @@ button:hover {
   font-size: 11px;
 }
 
+/* Task buttons */
+.task button {
+  height: 34px;
+  line-height: 34px;
+  padding: 0 12px;
+  font-size: 13px;
+  margin-top: 0;
+}
+
 .task .delete {
   background-color: #dc3545;
 }
 
+/* Empty text */
 .empty {
   color: gray;
+  font-size: 13px;
 }
 
 /* Status colors */
 .status {
-  padding: 3px 8px;
+  padding: 3px 6px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: bold;
 }
 

@@ -4,10 +4,16 @@ import "./App.css";
 function App() {
   const [tasks, setTasks] = useState([]);
 
+  // Add task states
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
+
+  // Search & filter (TASK LIST side)
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [priorityFilter, setPriorityFilter] = useState("All");
 
   const priorityOrder = {
     High: 1,
@@ -56,7 +62,7 @@ function App() {
 
   return (
     <div className="page">
-    
+      {/* LEFT SIDE */}
       <div className="left">
         <h2>Add Task</h2>
 
@@ -73,10 +79,7 @@ function App() {
           onChange={(e) => setDesc(e.target.value)}
         />
 
-        <select
-          value={priority}
-          onChange={(e) => setPriority(e.target.value)}
-        >
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
           <option>Low</option>
           <option>Medium</option>
           <option>High</option>
@@ -91,13 +94,51 @@ function App() {
         <button onClick={addTask}>Add Task</button>
       </div>
 
-    
+      {/* RIGHT SIDE */}
       <div className="right">
         <h2>Task List</h2>
+
+        {/* SEARCH & FILTERS */}
+        <div className="filters">
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+          </select>
+
+          <select
+            value={priorityFilter}
+            onChange={(e) => setPriorityFilter(e.target.value)}
+          >
+            <option value="All">All</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
 
         {tasks.length === 0 && <p className="empty">No tasks added</p>}
 
         {[...tasks]
+          .filter(task =>
+            task.title.toLowerCase().includes(search.toLowerCase())
+          )
+          .filter(task =>
+            statusFilter === "All" ? true : task.status === statusFilter
+          )
+          .filter(task =>
+            priorityFilter === "All" ? true : task.priority === priorityFilter
+          )
           .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
           .map(task => (
             <div key={task.id} className="task">
@@ -106,12 +147,18 @@ function App() {
 
               <p><strong>Priority:</strong> {task.priority}</p>
               <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
+
               <p>
                 <strong>Status:</strong>{" "}
-                <span className={`status ${task.status === "Completed" ? "done" : "pending"}`}>
+                <span
+                  className={`status ${
+                    task.status === "Completed" ? "done" : "pending"
+                  }`}
+                >
                   {task.status}
                 </span>
               </p>
+
               <small>Created At: {task.createdAt}</small><br />
               <small>Updated At: {task.updatedAt}</small><br /><br />
 
