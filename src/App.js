@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 
 function App() {
+  /* ================= AUTH ================= */
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [role, setRole] = useState("");
+
+  /* ================= TASK ================= */
   const [tasks, setTasks] = useState([]);
 
+  /* ================= FORM ================= */
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
 
-
+  /* ================= SEARCH & FILTER ================= */
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
@@ -20,6 +27,40 @@ function App() {
     Low: 3
   };
 
+  /* ================= LOAD FROM LOCALSTORAGE ================= */
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+    if (user) {
+      setIsLoggedIn(true);
+      setUsername(user.username);
+      setRole(user.role);
+    }
+
+    setTasks(savedTasks);
+  }, []);
+
+  /* ================= SAVE TASKS ================= */
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
+
+  /* ================= LOGIN ================= */
+  const login = () => {
+    if (username === "" || role === "") return;
+    localStorage.setItem("user", JSON.stringify({ username, role }));
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setUsername("");
+    setRole("");
+  };
+
+  /* ================= TASK ACTIONS ================= */
   const addTask = () => {
     if (title.trim() === "") return;
 
@@ -37,35 +78,64 @@ function App() {
     };
 
     setTasks([...tasks, newTask]);
-
     setTitle("");
     setDesc("");
     setPriority("Low");
     setDueDate("");
   };
 
-  const deleteTask = (id) => {
-    setTasks(tasks.filter(task => task.id !== id));
-  };
-
   const markDone = (id) => {
     const now = new Date().toLocaleString();
     setTasks(
-      tasks.map(task =>
-        task.id === id
-          ? { ...task, status: "Completed", updatedAt: now }
-          : task
+      tasks.map(t =>
+        t.id === id ? { ...t, status: "Completed", updatedAt: now } : t
       )
     );
   };
 
+  const deleteTask = (id) => {
+    setTasks(tasks.filter(t => t.id !== id));
+  };
+
+  /* ================= LOGIN PAGE ================= */
+  if (!isLoggedIn) {
+    return (
+      <div className="login-box">
+        <h2>Login</h2>
+
+        <input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="">Select Role</option>
+          <option value="ADMIN">ADMIN</option>
+          <option value="INTERN">INTERN</option>
+        </select>
+
+        <button onClick={login}>Login</button>
+      </div>
+    );
+  }
+
+  /* ================= MAIN PAGE ================= */
   return (
     <div className="page">
+      {/* TOP BAR */}
+      <div className="top-bar">
+        <p>
+          Welcome <b>{username}</b> ({role})
+        </p>
+        <button onClick={logout}>Logout</button>
+      </div>
+
+      {/* LEFT - ADD TASK */}
       <div className="left">
         <h2>Add Task</h2>
 
         <input
-          type="text"
           placeholder="Task title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -92,12 +162,13 @@ function App() {
         <button onClick={addTask}>Add Task</button>
       </div>
 
+      {/* RIGHT - TASK LIST */}
       <div className="right">
         <h2>Task List</h2>
 
+        {/* SEARCH & FILTER */}
         <div className="filters">
           <input
-            type="text"
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -123,29 +194,25 @@ function App() {
           </select>
         </div>
 
-        {tasks.length === 0 && <p className="empty">No tasks added</p>}
-
         {[...tasks]
-          .filter(task =>
-            task.title.toLowerCase().includes(search.toLowerCase())
+          .filter(t =>
+            t.title.toLowerCase().includes(search.toLowerCase())
           )
-          .filter(task =>
-            statusFilter === "All" ? true : task.status === statusFilter
+          .filter(t =>
+            statusFilter === "All" ? true : t.status === statusFilter
           )
-          .filter(task =>
-            priorityFilter === "All" ? true : task.priority === priorityFilter
+          .filter(t =>
+            priorityFilter === "All" ? true : t.priority === priorityFilter
           )
           .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
           .map(task => (
             <div key={task.id} className="task">
               <b>{task.title}</b>
               <p>{task.description}</p>
-
-              <p><strong>Priority:</strong> {task.priority}</p>
-              <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
+              <p>Priority: {task.priority}</p>
 
               <p>
-                <strong>Status:</strong>{" "}
+                Status:{" "}
                 <span
                   className={`status ${
                     task.status === "Completed" ? "done" : "pending"
@@ -155,13 +222,18 @@ function App() {
                 </span>
               </p>
 
-              <small>Created At: {task.createdAt}</small><br />
-              <small>Updated At: {task.updatedAt}</small><br /><br />
+              <small>Created: {task.createdAt}</small><br />
+              <small>Updated: {task.updatedAt}</small><br />
 
-              <button onClick={() => markDone(task.id)}>Done</button>
-              <button className="delete" onClick={() => deleteTask(task.id)}>
-                Delete
-              </button>
+              {/* ADMIN ONLY ACTIONS */}
+              {role === "ADMIN" && (
+                <>
+                  <button onClick={() => markDone(task.id)}>Done</button>
+                  <button className="delete" onClick={() => deleteTask(task.id)}>
+                    Delete
+                  </button>
+                </>
+              )}
             </div>
           ))}
       </div>
