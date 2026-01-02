@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "name": "Admin User",
+    "email": "admin@gmail.com",
+    "password": "$2b$10$AWSne5I4UdGPzF395c0d/.qLsMsqih4DcfzXauNWtEH88cWyJFTEi",
+    "role": "admin"
+  },
+  {
+    "id": 2,
+    "name": "Praveen",
+    "email": "praveen@gmail.com",
+    "password": "$2b$10$kkmwQUJVsjhUY2ZW88gq6eX7ckdvPhrCyITKmjgh4jUB8P3cS4U5K",
+    "role": "intern"
+  }
+]
