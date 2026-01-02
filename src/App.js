@@ -30,7 +30,7 @@ function App() {
 
     if (loggedUser) {
       setIsLoggedIn(true);
-      setUsername(loggedUser.email || loggedUser.username);
+      setUsername(loggedUser.name || loggedUser.email || loggedUser.username);
       setRole(loggedUser.role);
 
       // Verify token and fetch profile if token exists
@@ -97,6 +97,24 @@ function App() {
       setRole(data.role);
       setIsLoggedIn(true);
       setPassword("");
+
+      // fetch profile to get the user's name and update UI/storage
+      try {
+        const profileRes = await fetch("http://localhost:5001/me", {
+          headers: { Authorization: `Bearer ${data.token}` }
+        });
+        if (profileRes.ok) {
+          const profile = await profileRes.json();
+          setUsername(profile.name || profile.email);
+          // update stored loggedUser with name
+          localStorage.setItem(
+            "loggedUser",
+            JSON.stringify({ email: username, token: data.token, role: data.role, name: profile.name })
+          );
+        }
+      } catch (err) {
+        console.error('Profile fetch after login error', err);
+      }
     } catch (err) {
       console.error('Login error', err);
       alert('Network error');
@@ -148,6 +166,7 @@ function App() {
   };
 
   const deleteTask = (id) => {
+    if (!window.confirm('Delete this task?')) return;
     setTasks(tasks.filter(t => t.id !== id));
   };
 
@@ -196,8 +215,13 @@ function App() {
     <>
       {/* HEADER */}
       <div className="header">
+        <div className="brand">
+          <div className="logo">TM</div>
+          <div className="app-name">Task Manager</div>
+        </div>
+
         <div className="welcome">
-          Welcome <b>{username}</b> ({role})
+          Welcome <b>{username}</b> <span className="role-badge">{role}</span>
         </div>
         <button className="logout-btn" onClick={logout}>
           Logout
@@ -234,7 +258,10 @@ function App() {
             onChange={e => setDueDate(e.target.value)}
           />
 
-          <button onClick={addTask}>Add Task</button>
+          <button className="btn btn--add" onClick={addTask}>
+            <span className="btn-icon">+</span>
+            Add Task
+          </button>
         </div>
 
         {/* TASK LIST */}
@@ -296,14 +323,16 @@ function App() {
               <small><strong>Created:</strong> {task.createdAt}</small><br />
               <small><strong>Updated:</strong> {task.updatedAt}</small><br />
 
-              {role === "ADMIN" && (
-                <>
-                  <button onClick={() => markDone(task.id)}>Done</button>
-                  <button className="delete" onClick={() => deleteTask(task.id)}>
-                    Delete
+              <div className="task-actions">
+                {task.status !== "Completed" && (
+                  <button className="btn" onClick={() => markDone(task.id)}>
+                    Mark Done
                   </button>
-                </>
-              )}
+                )}
+                <button className="btn btn--danger" onClick={() => deleteTask(task.id)}>
+                  Delete
+                </button>
+              </div>
             </div>
 
             ))}
