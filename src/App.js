@@ -55,61 +55,73 @@ function App() {
   };
 
   return (
-    <div className="container">
-      <h2>Task Manager</h2>
+    <div className="page">
+    
+      <div className="left">
+        <h2>Add Task</h2>
 
-      <input
-        type="text"
-        placeholder="Task title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
+        <input
+          type="text"
+          placeholder="Task title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
 
-      <textarea
-        placeholder="Task description"
-        value={desc}
-        onChange={(e) => setDesc(e.target.value)}
-      />
+        <textarea
+          placeholder="Task description"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+        />
 
-      <select
-        value={priority}
-        onChange={(e) => setPriority(e.target.value)}
-      >
-        <option>Low</option>
-        <option>Medium</option>
-        <option>High</option>
-      </select>
+        <select
+          value={priority}
+          onChange={(e) => setPriority(e.target.value)}
+        >
+          <option>Low</option>
+          <option>Medium</option>
+          <option>High</option>
+        </select>
 
-      <input
-        type="date"
-        value={dueDate}
-        onChange={(e) => setDueDate(e.target.value)}
-      />
+        <input
+          type="date"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
 
-      <button onClick={addTask}>Add Task</button>
+        <button onClick={addTask}>Add Task</button>
+      </div>
 
-      {tasks.length === 0 && <p className="empty">No tasks added</p>}
+    
+      <div className="right">
+        <h2>Task List</h2>
 
-      {[...tasks]
-        .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-        .map(task => (
-          <div key={task.id} className="task">
-            <b>{task.title}</b>
-            <p>{task.description}</p>
+        {tasks.length === 0 && <p className="empty">No tasks added</p>}
 
-            <p><strong>Priority:</strong> {task.priority}</p>
-            <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
-            <p><strong>Status:</strong> {task.status}</p>
+        {[...tasks]
+          .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+          .map(task => (
+            <div key={task.id} className="task">
+              <b>{task.title}</b>
+              <p>{task.description}</p>
 
-            <small>Created At: {task.createdAt}</small><br />
-            <small>Updated At: {task.updatedAt}</small><br /><br />
+              <p><strong>Priority:</strong> {task.priority}</p>
+              <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span className={`status ${task.status === "Completed" ? "done" : "pending"}`}>
+                  {task.status}
+                </span>
+              </p>
+              <small>Created At: {task.createdAt}</small><br />
+              <small>Updated At: {task.updatedAt}</small><br /><br />
 
-            <button onClick={() => markDone(task.id)}>Done</button>
-            <button className="delete" onClick={() => deleteTask(task.id)}>
-              Delete
-            </button>
-          </div>
-        ))}
+              <button onClick={() => markDone(task.id)}>Done</button>
+              <button className="delete" onClick={() => deleteTask(task.id)}>
+                Delete
+              </button>
+            </div>
+          ))}
+      </div>
     </div>
   );
 }

@@ -3,20 +3,33 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* Main box */
-.container {
-  width: 450px;
-  margin: 40px auto;
+/* Page split */
+.page {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Left side */
+.left {
+  width: 35%;
   background: #ffffff;
   padding: 20px;
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Title */
+/* Right side */
+.right {
+  width: 65%;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 h2 {
-  text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 /* Inputs */
@@ -36,21 +49,20 @@ textarea {
   height: 60px;
 }
 
-/* Add button */
+/* Buttons */
 button {
   padding: 7px 12px;
   margin-top: 12px;
   margin-right: 5px;
   border: none;
   border-radius: 4px;
-  background-color: #007bff;
+  background-color: #19b102;
   color: white;
   cursor: pointer;
-  font-size: 13px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  opacity: 0.9;
 }
 
 /* Task card */
@@ -62,32 +74,42 @@ button:hover {
   border-radius: 5px;
 }
 
-/* Task title */
 .task b {
   font-size: 15px;
 }
 
-/* Task details */
 .task p {
   margin: 4px 0;
   font-size: 13px;
 }
 
-/* Dates */
 .task small {
   color: #666;
   font-size: 11px;
 }
 
-/* Done & delete buttons */
-.task button {
-  background-color: #28a745;
-}
-
-.task button:last-child {
+.task .delete {
   background-color: #dc3545;
 }
 
-.task button:hover {
-  opacity: 0.9;
+.empty {
+  color: gray;
+}
+
+/* Status colors */
+.status {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status.pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status.done {
+  background-color: #d4edda;
+  color: #155724;
 }
