@@ -558,3 +558,16 @@ body {
   border-radius: 999px;
 }
 
+/* FILTER LABEL STYLING */
+.filter-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-item label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
