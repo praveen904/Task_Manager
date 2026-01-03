@@ -1,0 +1,73 @@
+[
+  {
+    "id": 101,
+    "title": "Sample Task 1",
+    "description": "Test task",
+    "priority": "High",
+    "status": "Pending",
+    "owner": "admin@gmail.com",
+    "ownerRole": "admin",
+    "createdAt": "today",
+    "updatedAt": "today"
+  },
+  {
+    "id": 1767419881100,
+    "title": "sfvwsv",
+    "description": "svwv",
+    "priority": "Medium",
+    "dueDate": "",
+    "status": "Pending",
+    "owner": "Praveen",
+    "ownerRole": "intern",
+    "createdAt": "3/1/2026, 11:28:01 am",
+    "updatedAt": "3/1/2026, 11:28:01 am"
+  },
+  {
+    "id": 1767419894304,
+    "title": "svebv",
+    "description": "ver fq3f",
+    "priority": "Medium",
+    "dueDate": "",
+    "status": "Pending",
+    "owner": "Praveen",
+    "ownerRole": "intern",
+    "createdAt": "3/1/2026, 11:28:14 am",
+    "updatedAt": "3/1/2026, 11:28:14 am"
+  },
+  {
+    "id": 1767419990870,
+    "title": "sdvervb",
+    "description": "erbewr",
+    "priority": "Low",
+    "dueDate": "",
+    "status": "Pending",
+    "owner": "TestIntern",
+    "ownerRole": "intern",
+    "createdAt": "3/1/2026, 11:29:50 am",
+    "updatedAt": "3/1/2026, 11:29:50 am"
+  },
+  {
+    "id": 1767420108988,
+    "title": "HTML",
+    "description": "wvergbewgbw4",
+    "priority": "Low",
+    "dueDate": "",
+    "status": "Completed",
+    "owner": "Akash",
+    "ownerRole": "intern",
+    "createdAt": "3/1/2026, 11:31:48 am",
+    "updatedAt": "3/1/2026, 11:33:21 am"
+  },
+  {
+    "id": 1767420158052,
+    "title": "Css",
+    "description": "sdververv",
+    "priority": "Low",
+    "dueDate": "2026-01-14",
+    "status": "Pending",
+    "owner": "Praveen",
+    "ownerRole": "intern",
+    "createdAt": "3/1/2026, 11:32:38 am",
+    "updatedAt": "3/1/2026, 11:32:38 am"
+  }
+]

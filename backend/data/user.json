@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "name": "Admin User",
+    "name": "Admin",
     "email": "admin@gmail.com",
     "password": "$2b$10$AWSne5I4UdGPzF395c0d/.qLsMsqih4DcfzXauNWtEH88cWyJFTEi",
     "role": "admin"
@@ -11,6 +11,13 @@
     "name": "Praveen",
     "email": "praveen@gmail.com",
     "password": "$2b$10$kkmwQUJVsjhUY2ZW88gq6eX7ckdvPhrCyITKmjgh4jUB8P3cS4U5K",
+    "role": "intern"
+  },
+  {
+    "id": 3,
+    "name": "Akash",
+    "email": "akash@gmail.com",
+    "password": "$2b$10$6vit8JY5O9RNV9o2oBTJJ.SvY7qlX9SyRF0lHCuIOL0VZRKwZy4sq",
     "role": "intern"
   }
 ]

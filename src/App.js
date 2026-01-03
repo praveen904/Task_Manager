@@ -20,12 +20,14 @@ function App() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
+  const [ownerFilter, setOwnerFilter] = useState("All");
 
   const priorityOrder = { High: 1, Medium: 2, Low: 3 };
 
   /* ================= LOAD STORAGE ================= */
   useEffect(() => {
     const loggedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    // localStorage fallback only for quick demo or when backend not available
     const savedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
 
     if (loggedUser) {
@@ -48,8 +50,13 @@ function App() {
             }
           })
           .catch(err => console.error('Profile fetch error:', err));
+
+        // fetch tasks from backend
+        fetchTasks();
       }
     }
+
+    // initial fallback
     setTasks(savedTasks);
   }, []);
 
@@ -131,24 +138,50 @@ function App() {
   };
 
   /* ================= TASK LOGIC ================= */
-  const addTask = () => {
+  const addTask = async () => {
     if (!title.trim()) return;
 
-    const now = new Date().toLocaleString();
+    const logged = JSON.parse(localStorage.getItem('loggedUser')) || {};
 
-    setTasks([
-      ...tasks,
-      {
-        id: Date.now(),
-        title,
-        description: desc,
-        priority,
-        dueDate,
-        status: "Pending",
-        createdAt: now,
-        updatedAt: now
+    // If logged in with backend token, POST there
+    if (logged.token) {
+      try {
+        const res = await fetch('http://localhost:5001/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${logged.token}` },
+          body: JSON.stringify({ title, description: desc, priority, dueDate })
+        });
+        if (!res.ok) {
+          let errMsg = res.statusText;
+          try { const errBody = await res.json(); errMsg = errBody.message || JSON.stringify(errBody); } catch(e){}
+          console.error('addTask failed', res.status, errMsg);
+          return alert('Failed to add task: ' + errMsg);
+        }
+        const newTask = await res.json();
+        setTasks(prev => [...prev, newTask]);
+      } catch (err) {
+        console.error('addTask POST error', err);
+        alert('Network error');
       }
-    ]);
+    } else {
+      // fallback local-only behavior
+      const now = new Date().toLocaleString();
+      setTasks([
+        ...tasks,
+        {
+          id: Date.now(),
+          title,
+          description: desc,
+          priority,
+          dueDate,
+          status: "Pending",
+          owner: username,
+          ownerRole: role,
+          createdAt: now,
+          updatedAt: now
+        }
+      ]);
+    }
 
     setTitle("");
     setDesc("");
@@ -156,19 +189,81 @@ function App() {
     setDueDate("");
   };
 
-  const markDone = (id) => {
-    const now = new Date().toLocaleString();
-    setTasks(
-      tasks.map(t =>
-        t.id === id ? { ...t, status: "Completed", updatedAt: now } : t
-      )
-    );
+  const markDone = async (id) => {
+    const logged = JSON.parse(localStorage.getItem('loggedUser')) || {};
+
+    if (logged.token) {
+      try {
+        const res = await fetch(`http://localhost:5001/tasks/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${logged.token}` },
+          body: JSON.stringify({ status: 'Completed' })
+        });
+        if (!res.ok) return alert('Failed to update task');
+        const updated = await res.json();
+        setTasks(tasks.map(t => (t.id === id ? updated : t)));
+      } catch (err) {
+        console.error('markDone PATCH error', err);
+        alert('Network error');
+      }
+    } else {
+      const now = new Date().toLocaleString();
+      setTasks(
+        tasks.map(t => (t.id === id ? { ...t, status: "Completed", updatedAt: now } : t))
+      );
+    }
   };
 
-  const deleteTask = (id) => {
+  const deleteTask = async (id) => {
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
+
+    const isOwner = task.owner === username;
+    const isAdmin = role === 'admin';
+    const adminDeletingOtherAdmin = isAdmin && task.ownerRole === 'admin' && task.owner !== username;
+
+    if (!isOwner && !(isAdmin && !adminDeletingOtherAdmin)) {
+      return alert('You are not allowed to delete this task.');
+    }
+
     if (!window.confirm('Delete this task?')) return;
-    setTasks(tasks.filter(t => t.id !== id));
+
+    const logged = JSON.parse(localStorage.getItem('loggedUser')) || {};
+    if (logged.token) {
+      try {
+        const res = await fetch(`http://localhost:5001/tasks/${id}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${logged.token}` }
+        });
+        if (!res.ok) return alert((await res.json()).message || 'Failed to delete');
+        setTasks(tasks.filter(t => t.id !== id));
+      } catch (err) {
+        console.error('deleteTask DELETE error', err);
+        alert('Network error');
+      }
+    } else {
+      setTasks(tasks.filter(t => t.id !== id));
+    }
   };
+
+  // helper: fetch tasks from backend
+  const fetchTasks = async () => {
+    try {
+      const logged = JSON.parse(localStorage.getItem('loggedUser')) || {};
+      if (!logged.token) return;
+      const res = await fetch('http://localhost:5001/tasks', {
+        headers: { Authorization: `Bearer ${logged.token}` }
+      });
+      if (!res.ok) return;
+      const data = await res.json();
+      setTasks(data);
+    } catch (err) {
+      console.error('fetchTasks error', err);
+    }
+  };
+
+  // derived owners for admin filter
+  const owners = Array.from(new Set(tasks.map(t => t.owner).filter(Boolean)));
 
   /* ================= AUTH PAGE ================= */
   if (!isLoggedIn) {
@@ -275,6 +370,16 @@ function App() {
               onChange={e => setSearch(e.target.value)}
             />
 
+            {role === 'admin' && (
+              <select
+                value={ownerFilter}
+                onChange={e => setOwnerFilter(e.target.value)}
+              >
+                <option>All</option>
+                {owners.map(o => <option key={o}>{o}</option>)}
+              </select>
+            )}
+
             <select
               value={statusFilter}
               onChange={e => setStatusFilter(e.target.value)}
@@ -293,48 +398,66 @@ function App() {
               <option>Medium</option>
               <option>Low</option>
             </select>
+          </div> 
+
+          <div className="task-list-header">
+            <div className="col title">Title</div>
+            <div className="col priority">Priority</div>
+            <div className="col due">Due</div>
+            <div className="col owner">Owner</div>
+            <div className="col created">Created</div>
+            <div className="col updated">Updated</div>
+            <div className="col status">Status</div>
+            <div className="col actions">Actions</div>
           </div>
 
           {[...tasks]
+            .filter(t => {
+              if (role === 'admin') {
+                return ownerFilter === "All" || t.owner === ownerFilter;
+              } else {
+                return t.owner === username;
+              }
+            })
             .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
             .filter(t => statusFilter === "All" || t.status === statusFilter)
             .filter(t => priorityFilter === "All" || t.priority === priorityFilter)
             .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
             .map(task => (
               <div key={task.id} className="task">
-              <b>{task.title}</b>
-              <p>{task.description}</p>
+                <div className="cell title">
+                  <b>{task.title}</b>
+                  <p>{task.description}</p>
+                </div>
 
-              <p><strong>Priority:</strong> {task.priority}</p>
+                <div className="cell priority">{task.priority}</div>
 
-              <p><strong>Due Date:</strong> {task.dueDate || "Not set"}</p>
+                <div className="cell due">{task.dueDate || "Not set"}</div>
 
-              <p>
-                <strong>Status:</strong>{" "}
-                <span
-                  className={`status ${
-                    task.status === "Completed" ? "done" : "pending"
-                  }`}
-                >
-                  {task.status}
-                </span>
-              </p>
+                <div className="cell owner">{task.owner || '—'}</div>
 
-              <small><strong>Created:</strong> {task.createdAt}</small><br />
-              <small><strong>Updated:</strong> {task.updatedAt}</small><br />
+                <div className="cell created">{task.createdAt || '—'}</div>
+                <div className="cell updated">{task.updatedAt || '—'}</div>
 
-              <div className="task-actions">
-                {task.status !== "Completed" && (
-                  <button className="btn" onClick={() => markDone(task.id)}>
-                    Mark Done
-                  </button>
-                )}
-                <button className="btn btn--danger" onClick={() => deleteTask(task.id)}>
-                  Delete
-                </button>
+                <div className="cell status">
+                  <span className={`status ${task.status === "Completed" ? "done" : "pending"}`}>
+                    {task.status}
+                  </span>
+                </div>
+
+                <div className="cell actions">
+                  {((role === 'admin' && task.ownerRole !== 'admin') || task.owner === username) && task.status !== "Completed" && (
+                    <button className="btn" onClick={() => markDone(task.id)}>
+                      Mark Done
+                    </button>
+                  )}
+                  {((role === 'admin' && task.ownerRole !== 'admin') || task.owner === username) && (
+                    <button className="btn btn--danger" onClick={() => deleteTask(task.id)}>
+                      Delete
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-
             ))}
         </div>
       </div>
