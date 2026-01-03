@@ -19,5 +19,19 @@
     "email": "akash@gmail.com",
     "password": "$2b$10$6vit8JY5O9RNV9o2oBTJJ.SvY7qlX9SyRF0lHCuIOL0VZRKwZy4sq",
     "role": "intern"
+  },
+  {
+    "id": 4,
+    "name": "Nandhu",
+    "email": "nandhu@gmail.com",
+    "password": "$2b$10$6vit8JY5O9RNV9o2oBTJJ.SvY7qlX9SyRF0lHCuIOL0VZRKwZy4sq",
+    "role": "intern"
+  },
+  {
+   "id": 5,
+    "name": "Thrisha",
+    "email": "thrisha@gmail.com",
+    "password": "$2b$10$kkmwQUJVsjhUY2ZW88gq6eX7ckdvPhrCyITKmjgh4jUB8P3cS4U5K",
+    "role": "intern"
   }
 ]

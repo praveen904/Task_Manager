@@ -6,24 +6,31 @@ const API_BASE = "http://localhost:8080";
 function App() {
   /* ================= AUTH ================= */
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
 
+  // signup fields
+  const [signupName, setSignupName] = useState("");
+  const [signupEmail, setSignupEmail] = useState("");
+  const [signupPassword, setSignupPassword] = useState("");
+  const [signupRole, setSignupRole] = useState("intern");
+
   /* ================= TASK ================= */
   const [tasks, setTasks] = useState([]);
 
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [priority, setPriority] = useState("Low");
-  const [dueDate, setDueDate] = useState("");
-
+  // filters
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [priorityFilter, setPriorityFilter] = useState("All");
   const [ownerFilter, setOwnerFilter] = useState("All");
 
-  const priorityOrder = { High: 1, Medium: 2, Low: 3 };
+  const [title, setTitle] = useState("");
+  const [desc, setDesc] = useState("");
+  const [priority, setPriority] = useState("Low");
+  const [dueDate, setDueDate] = useState("");
 
   /* ================= LOAD ================= */
   useEffect(() => {
@@ -40,36 +47,66 @@ function App() {
   const login = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await fetch(`${API_BASE}/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: username, password })
-      });
+    const res = await fetch(`${API_BASE}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: username, password })
+    });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
+    const data = await res.json();
+    if (!res.ok) return alert(data.message);
 
-      localStorage.setItem(
-        "loggedUser",
-        JSON.stringify({
-          token: data.token,
-          role: data.role,
-          email: username
-        })
-      );
+    localStorage.setItem(
+      "loggedUser",
+      JSON.stringify({
+        token: data.token,
+        role: data.role,
+        email: username
+      })
+    );
 
-      setIsLoggedIn(true);
-      setRole(data.role);
-      setUsername(username.split("@")[0]);
-      setPassword("");
-
-      fetchTasks(data.token);
-    } catch {
-      alert("Network error");
-    }
+    setIsLoggedIn(true);
+    setRole(data.role);
+    setUsername(username.split("@")[0]);
+    setPassword("");
+    fetchTasks(data.token);
   };
 
+  /* ================= SIGNIN / SIGNUP (DEMO) ================= */
+  const signup = (e) => {
+    e.preventDefault();
+
+    if (!signupName || !signupEmail || !signupPassword) {
+      alert("All fields required");
+      return;
+    }
+
+    const users = JSON.parse(localStorage.getItem("demoUsers")) || [];
+
+    if (users.find(u => u.email === signupEmail)) {
+      alert("User already exists. Please login.");
+      setIsSignup(false);
+      return;
+    }
+
+    users.push({
+      name: signupName,
+      email: signupEmail,
+      password: signupPassword,
+      role: signupRole
+    });
+
+    localStorage.setItem("demoUsers", JSON.stringify(users));
+    alert("Signin successful. Please login.");
+    setIsSignup(false);
+
+    setSignupName("");
+    setSignupEmail("");
+    setSignupPassword("");
+    setSignupRole("intern");
+  };
+
+  /* ================= LOGOUT ================= */
   const logout = () => {
     localStorage.removeItem("loggedUser");
     setIsLoggedIn(false);
@@ -80,11 +117,15 @@ function App() {
 
   /* ================= TASK APIs ================= */
   const fetchTasks = async (token) => {
-    const res = await fetch(`${API_BASE}/tasks`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-    setTasks(data);
+    try {
+      const res = await fetch(`${API_BASE}/tasks`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setTasks(Array.isArray(data) ? data : []);
+    } catch {
+      setTasks([]);
+    }
   };
 
   const addTask = async () => {
@@ -92,27 +133,26 @@ function App() {
 
     const logged = JSON.parse(localStorage.getItem("loggedUser"));
 
-    try {
-      const res = await fetch(`${API_BASE}/tasks`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${logged.token}`
-        },
-        body: JSON.stringify({ title, description: desc, priority, dueDate })
-      });
+    const res = await fetch(`${API_BASE}/tasks`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${logged.token}`
+      },
+      body: JSON.stringify({
+        title,
+        description: desc,
+        priority,
+        dueDate
+      })
+    });
 
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
-
-      setTasks(prev => [...prev, data]);
-      setTitle("");
-      setDesc("");
-      setPriority("Low");
-      setDueDate("");
-    } catch {
-      alert("Network error");
-    }
+    const data = await res.json();
+    setTasks(prev => [...prev, data]);
+    setTitle("");
+    setDesc("");
+    setPriority("Low");
+    setDueDate("");
   };
 
   const markDone = async (id) => {
@@ -131,66 +171,110 @@ function App() {
     setTasks(tasks.map(t => (t.id === id ? updated : t)));
   };
 
-  const deleteTask = async (id) => {
-    const logged = JSON.parse(localStorage.getItem("loggedUser"));
-    if (!window.confirm("Delete this task?")) return;
-
-    await fetch(`${API_BASE}/tasks/${id}`, {
-      method: "DELETE",
-      headers: { Authorization: `Bearer ${logged.token}` }
-    });
-
-    setTasks(tasks.filter(t => t.id !== id));
-  };
-
-  const owners = Array.from(
-    new Set(tasks.map(t => t.owner?.split("@")[0]).filter(Boolean))
-  );
-
-  
-
-  /* ================= LOGIN PAGE ================= */
+  /* ================= LOGIN / SIGNIN PAGE ================= */
   if (!isLoggedIn) {
     return (
       <div className="login-box">
-        <h2>Task Manager Login</h2>
+        <h2>{isSignup ? "Sign In" : "Login"}</h2>
 
-        <form onSubmit={login}>
-          <input
-            placeholder="Email"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-          />
+        {isSignup ? (
+          <form onSubmit={signup}>
+            <input
+              placeholder="Name"
+              value={signupName}
+              onChange={e => setSignupName(e.target.value)}
+            />
+            <input
+              placeholder="Email"
+              value={signupEmail}
+              onChange={e => setSignupEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={signupPassword}
+              onChange={e => setSignupPassword(e.target.value)}
+            />
+            <select
+              value={signupRole}
+              onChange={e => setSignupRole(e.target.value)}
+            >
+              <option value="intern">Intern</option>
+              <option value="admin">Admin</option>
+            </select>
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
+            <button className="btn primary">Sign In</button>
+          </form>
+        ) : (
+          <form onSubmit={login}>
+            <input
+              placeholder="Email"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <button className="btn primary">Login</button>
+          </form>
+        )}
 
-          <button type="submit" className="btn primary">Login</button>
-        </form>
+        <p
+          style={{ marginTop: "14px", cursor: "pointer", color: "#4f46e5" }}
+          onClick={() => setIsSignup(!isSignup)}
+        >
+          {isSignup
+            ? "Already have an account? Login"
+            : "New user? Sign In"}
+        </p>
       </div>
     );
   }
 
-  /* ================= MAIN ================= */
+  /* ================= FILTERED TASKS ================= */
+  const filteredTasks = tasks
+    .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
+    .filter(t => statusFilter === "All" || t.status === statusFilter)
+    .filter(t => priorityFilter === "All" || t.priority === priorityFilter)
+    .filter(t =>
+      role === "admin"
+        ? ownerFilter === "All" || t.owner?.startsWith(ownerFilter)
+        : true
+    );
+
+  /* ================= MAIN PAGE ================= */
   return (
     <>
       <div className="header">
         <h1>Task Dashboard</h1>
+
         <div className="welcome">
           Welcome <b>{username}</b> ({role})
         </div>
-        <button className="btn logout" onClick={logout}>Logout</button>
+
+        <button className="btn logout" onClick={logout}>
+          Logout
+        </button>
       </div>
 
       <div className="page">
         <div className="left">
           <h2>Add Task</h2>
-          <input placeholder="Title" value={title} onChange={e => setTitle(e.target.value)} />
-          <textarea placeholder="Description" value={desc} onChange={e => setDesc(e.target.value)} />
+
+          <input
+            placeholder="Title"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+
+          <textarea
+            placeholder="Description"
+            value={desc}
+            onChange={e => setDesc(e.target.value)}
+          />
 
           <select value={priority} onChange={e => setPriority(e.target.value)}>
             <option>Low</option>
@@ -198,72 +282,98 @@ function App() {
             <option>High</option>
           </select>
 
-          <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
+          <input
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+          />
 
-          <button className="btn add" onClick={addTask}>+ Add Task</button>
+          <button className="btn add" onClick={addTask}>
+            + Add Task
+          </button>
         </div>
 
         <div className="right">
           <h2>Task List</h2>
-         
 
+          {/* FILTER BAR */}
           <div className="filters">
-            <input placeholder="Search" value={search} onChange={e => setSearch(e.target.value)} />
+            <input
+              placeholder="Search task..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
 
             {role === "admin" && (
-              <select value={ownerFilter} onChange={e => setOwnerFilter(e.target.value)}>
-                <option>All</option>
-                {owners.map(o => <option key={o}>{o}</option>)}
+              <select
+                value={ownerFilter}
+                onChange={e => setOwnerFilter(e.target.value)}
+              >
+                <option value="All">All Users</option>
+                {Array.from(
+                  new Set(tasks.map(t => t.owner?.split("@")[0]).filter(Boolean))
+                ).map(owner => (
+                  <option key={owner} value={owner}>
+                    {owner}
+                  </option>
+                ))}
               </select>
             )}
 
-            <select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}>
-              <option>All</option>
-              <option>Pending</option>
-              <option>Completed</option>
+            <select
+              value={statusFilter}
+              onChange={e => setStatusFilter(e.target.value)}
+            >
+              <option value="All">All Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
             </select>
 
-            <select value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)}>
-              <option>All</option>
-              <option>High</option>
-              <option>Medium</option>
-              <option>Low</option>
+            <select
+              value={priorityFilter}
+              onChange={e => setPriorityFilter(e.target.value)}
+            >
+              <option value="All">All Priority</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
             </select>
           </div>
-               <div className="task-header">
-  <div className="cell title">Title</div>
-  <div className="cell priority">Priority</div>
-  <div className="cell due">Due Date</div>
-  <div className="cell owner">Owner</div>
-  <div className="cell status">Status</div>
-  <div className="cell actions">Actions</div>
-</div>
-          {[...tasks]
-            .filter(t => role === "admin" ? ownerFilter === "All" || t.owner?.startsWith(ownerFilter) : true)
-            .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
-            .filter(t => statusFilter === "All" || t.status === statusFilter)
-            .filter(t => priorityFilter === "All" || t.priority === priorityFilter)
-            .sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
-            .map(task => (
-              <div key={task.id} className="task-row">
-                  <div className="cell title">{task.title}</div>
-                  <div className="cell priority">{task.priority}</div>
-                  <div className="cell due">{task.dueDate || "—"}</div>
-                  <div className="cell owner">{task.owner?.split("@")[0]}</div>
-                  <div className="cell status">{task.status}</div>
-                  <div className="cell actions">
-                    {task.status !== "Completed" && (
-                      <button className="btn done" onClick={() => markDone(task.id)}>
-                        Done
-                      </button>
-                    )}
-                    <button className="btn delete" onClick={() => deleteTask(task.id)}>
-                      Delete
-                    </button>
-                  </div>
-                </div>
 
-            ))}
+          <div className="task-header">
+            <div className="cell title">Title</div>
+            <div className="cell priority">Priority</div>
+            <div className="cell owner">Owner</div>
+            <div className="cell created">Created</div>
+            <div className="cell updated">Updated</div>
+            <div className="cell status">Status</div>
+            <div className="cell actions">Actions</div>
+          </div>
+
+          {filteredTasks.map(task => (
+            <div key={task.id} className="task-row">
+              <div className="cell title">{task.title}</div>
+              <div className="cell priority">{task.priority}</div>
+              <div className="cell owner">{task.owner.split("@")[0]}</div>
+              <div className="cell created">
+                {new Date(task.createdAt).toLocaleString()}
+              </div>
+              <div className="cell updated">
+                {new Date(task.updatedAt).toLocaleString()}
+              </div>
+              <div className="cell status">{task.status}</div>
+              <div className="cell actions">
+                {task.status !== "Completed" && (
+                  <button
+                    className="btn done"
+                    onClick={() => markDone(task.id)}
+                  >
+                    Done
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </>

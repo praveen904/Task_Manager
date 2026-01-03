@@ -35,147 +35,32 @@
     "updatedAt": "3/1/2026, 11:28:14 am"
   },
   {
-    "id": 1767419990870,
-    "title": "sdvervb",
-    "description": "erbewr",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "TestIntern",
-    "ownerRole": "intern",
-    "createdAt": "3/1/2026, 11:29:50 am",
-    "updatedAt": "3/1/2026, 11:29:50 am"
-  },
-  {
-    "id": 1767420108988,
-    "title": "HTML",
-    "description": "wvergbewgbw4",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "Akash",
-    "ownerRole": "intern",
-    "createdAt": "3/1/2026, 11:31:48 am",
-    "updatedAt": "3/1/2026, 11:33:21 am"
-  },
-  {
-    "id": 1767420158052,
-    "title": "Css",
-    "description": "sdververv",
-    "priority": "Low",
-    "dueDate": "2026-01-14",
-    "status": "Pending",
-    "owner": "Praveen",
-    "ownerRole": "intern",
-    "createdAt": "3/1/2026, 11:32:38 am",
-    "updatedAt": "3/1/2026, 11:32:38 am"
-  },
-  {
-    "id": 1767433187418,
-    "title": "sdvv",
-    "description": "asdva",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "praveen@gmail.com"
-  },
-  {
-    "id": 1767433193151,
-    "title": "sdvevev",
-    "description": "edvev",
-    "priority": "Medium",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "praveen@gmail.com"
-  },
-  {
-    "id": 1767433354476,
-    "title": "sdvbd",
-    "description": "db",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "praveen@gmail.com"
-  },
-  {
-    "id": 1767433521170,
-    "title": "fbrnbr",
-    "description": "sdbf",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "praveen@gmail.com"
-  },
-  {
-    "id": 1767433527865,
-    "title": "v f ",
-    "description": "b sdfb",
+    "id": 1767436299708,
+    "title": "UI Enhancement",
+    "description": "Improve task list UI with header row, button colors, and better spacing\n",
     "priority": "High",
-    "dueDate": "",
+    "dueDate": "2026-01-21",
     "status": "Completed",
-    "owner": "praveen@gmail.com"
+    "owner": "thrisha@gmail.com"
   },
   {
-    "id": 1767433543855,
-    "title": "xfgndfn",
-    "description": "dfgns",
+    "id": 1767444603645,
+    "title": "Role Based Access Testing",
+    "description": "Verify admin can view all intern tasks and intern can view only their own tasks\n",
     "priority": "Medium",
-    "dueDate": "2026-01-14",
-    "status": "Completed",
-    "owner": "praveen@gmail.com"
-  },
-  {
-    "id": 1767433958455,
-    "title": "sdfbab",
-    "description": "sadva",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Completed",
+    "dueDate": "2026-01-17",
+    "status": "Pending",
     "owner": "admin@gmail.com"
   },
   {
-    "id": 1767433964904,
-    "title": "sgvasga",
-    "description": "sdvas",
+    "id": 1767445785159,
+    "title": "playing football",
+    "description": "",
     "priority": "Medium",
-    "dueDate": "",
-    "status": "Pending",
-    "owner": "admin@gmail.com"
-  },
-  {
-    "id": 1767434000607,
-    "title": "fasfa",
-    "description": "sgvawge",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Pending",
-    "owner": "admin@gmail.com"
-  },
-  {
-    "id": 1767434010953,
-    "title": "drhse",
-    "description": "sdfs",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Pending",
-    "owner": "admin@gmail.com"
-  },
-  {
-    "id": 1767434282468,
-    "title": "dsgerg",
-    "description": "ewrgqweg",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Pending",
-    "owner": "admin@gmail.com"
-  },
-  {
-    "id": 1767434725879,
-    "title": "sdfwgqw",
-    "description": "sfwef",
-    "priority": "Low",
-    "dueDate": "",
-    "status": "Pending",
-    "owner": "praveen@gmail.com"
+    "dueDate": "2026-01-23",
+    "status": "Completed",
+    "owner": "praveen@gmail.com",
+    "createdAt": "2026-01-03T13:09:45.159Z",
+    "updatedAt": "2026-01-03T13:10:07.334Z"
   }
 ]
