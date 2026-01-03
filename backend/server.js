@@ -34,6 +34,38 @@ const getTasks = () => {
 const saveTasks = (tasks) =>
   fs.writeFileSync(tasksFile, JSON.stringify(tasks, null, 2));
 
+// ================= SIGNUP =================
+app.post("/signup", (req, res) => {
+  const { name, email, password, role } = req.body || {};
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "All fields required" });
+  }
+
+  const users = getUsers();
+
+  if (users.find(u => u.email === email)) {
+    return res.status(409).json({ message: "User already exists" });
+  }
+
+  const hashedPassword = bcrypt.hashSync(password, 10);
+
+  const newUser = {
+    id: Date.now(),
+    name,
+    email,
+    password: hashedPassword,
+    role: role || "intern"
+  };
+
+  users.push(newUser);
+
+  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+
+  res.status(201).json({ message: "Signup successful" });
+});
+
+
 // ================= LOGIN =================
 app.post("/login", (req, res) => {
   const { email, password } = req.body || {};

@@ -72,39 +72,46 @@ function App() {
     fetchTasks(data.token);
   };
 
-  /* ================= SIGNIN / SIGNUP (DEMO) ================= */
-  const signup = (e) => {
-    e.preventDefault();
+  const signup = async (e) => {
+  e.preventDefault();
 
-    if (!signupName || !signupEmail || !signupPassword) {
-      alert("All fields required");
-      return;
-    }
+  if (!signupName || !signupEmail || !signupPassword) {
+    alert("All fields required");
+    return;
+  }
 
-    const users = JSON.parse(localStorage.getItem("demoUsers")) || [];
-
-    if (users.find(u => u.email === signupEmail)) {
-      alert("User already exists. Please login.");
-      setIsSignup(false);
-      return;
-    }
-
-    users.push({
-      name: signupName,
-      email: signupEmail,
-      password: signupPassword,
-      role: signupRole
+  try {
+    const res = await fetch(`${API_BASE}/signup`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: signupName,
+        email: signupEmail,
+        password: signupPassword,
+        role: signupRole
+      })
     });
 
-    localStorage.setItem("demoUsers", JSON.stringify(users));
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message || "Signup failed");
+      return;
+    }
+
     alert("Signin successful. Please login.");
     setIsSignup(false);
 
+    // reset
     setSignupName("");
     setSignupEmail("");
     setSignupPassword("");
     setSignupRole("intern");
-  };
+  } catch {
+    alert("Network error");
+  }
+};
+
 
   /* ================= LOGOUT ================= */
   const logout = () => {
