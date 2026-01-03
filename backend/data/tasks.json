@@ -4,11 +4,11 @@
     "title": "Sample Task 1",
     "description": "Test task",
     "priority": "High",
-    "status": "Pending",
+    "status": "Completed",
     "owner": "admin@gmail.com",
     "ownerRole": "admin",
     "createdAt": "today",
-    "updatedAt": "today"
+    "updatedAt": "2026-01-03T14:47:35.043Z"
   },
   {
     "id": 1767419881100,
@@ -28,11 +28,11 @@
     "description": "ver fq3f",
     "priority": "Medium",
     "dueDate": "",
-    "status": "Pending",
+    "status": "Completed",
     "owner": "Praveen",
     "ownerRole": "intern",
     "createdAt": "3/1/2026, 11:28:14 am",
-    "updatedAt": "3/1/2026, 11:28:14 am"
+    "updatedAt": "2026-01-03T14:47:36.066Z"
   },
   {
     "id": 1767436299708,
@@ -49,8 +49,9 @@
     "description": "Verify admin can view all intern tasks and intern can view only their own tasks\n",
     "priority": "Medium",
     "dueDate": "2026-01-17",
-    "status": "Pending",
-    "owner": "admin@gmail.com"
+    "status": "Completed",
+    "owner": "admin@gmail.com",
+    "updatedAt": "2026-01-03T14:47:37.481Z"
   },
   {
     "id": 1767445785159,
@@ -69,9 +70,9 @@
     "description": "sdvevw",
     "priority": "Medium",
     "dueDate": "2026-01-16",
-    "status": "Pending",
+    "status": "Completed",
     "owner": "nandhu@gmail.com",
     "createdAt": "2026-01-03T13:17:10.661Z",
-    "updatedAt": "2026-01-03T13:17:10.661Z"
+    "updatedAt": "2026-01-03T14:47:38.609Z"
   }
 ]

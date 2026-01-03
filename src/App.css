@@ -571,3 +571,40 @@ body {
   color: #374151;
 }
 
+/* ================= DATE FILTER (LABEL STYLE) ================= */
+
+.date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.date-filter span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #374151; /* slate-700 */
+  letter-spacing: 0.3px;
+}
+
+.date-filter input[type="date"] {
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 13px;
+  background: #ffffff;
+  transition: all 0.2s ease;
+}
+
+.date-filter input[type="date"]:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Make date filters align nicely with other filters */
+.filters {
+  align-items: flex-end;
+  gap: 12px;
+}
+
