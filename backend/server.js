@@ -7,61 +7,52 @@ const jwt = require("jsonwebtoken");
 
 const app = express();
 
-// ----------------- CONFIG -----------------
-const PORT = process.env.PORT || 5000;
+// ================= CONFIG =================
+const PORT = 8080;
 const JWT_SECRET = "mysecretkey";
 
-// File paths
-const usersFilePath = path.join(__dirname, "data", "user.json");
-const tasksFilePath = path.join(__dirname, "data", "tasks.json");
+// ================= FILE PATHS =================
+const usersFile = path.join(__dirname, "data", "user.json");
+const tasksFile = path.join(__dirname, "data", "tasks.json");
 
-// ----------------- MIDDLEWARE -----------------
+// ================= MIDDLEWARE =================
 app.use(cors());
 app.use(express.json());
 
-// ----------------- HELPERS -----------------
-function getUsers() {
-  const data = fs.readFileSync(usersFilePath, "utf-8");
-  return JSON.parse(data);
-}
+// ================= HELPERS =================
+const getUsers = () =>
+  JSON.parse(fs.readFileSync(usersFile, "utf-8"));
 
-function getTasks() {
+const getTasks = () => {
   try {
-    const data = fs.readFileSync(tasksFilePath, "utf-8");
-    return JSON.parse(data || "[]");
+    return JSON.parse(fs.readFileSync(tasksFile, "utf-8"));
   } catch {
     return [];
   }
-}
+};
 
-function saveTasks(tasks) {
-  fs.writeFileSync(tasksFilePath, JSON.stringify(tasks, null, 2));
-}
+const saveTasks = (tasks) =>
+  fs.writeFileSync(tasksFile, JSON.stringify(tasks, null, 2));
 
-// ----------------- TEST ROUTE -----------------
+// ================= TEST =================
 app.get("/", (req, res) => {
   res.send("Backend server is running");
 });
 
-// ----------------- LOGIN -----------------
+// ================= LOGIN =================
 app.post("/login", (req, res) => {
-  console.log("BODY:", req.body); // 👈 ADD THIS
+  const { email, password } = req.body || {};
 
   if (!email || !password) {
     return res.status(400).json({ message: "Email and password required" });
   }
 
-  const users = getUsers();
-  const user = users.find(
-    u => u.email.toLowerCase() === email.toLowerCase().trim()
-  );
-
+  const user = getUsers().find(u => u.email === email);
   if (!user) {
     return res.status(401).json({ message: "Invalid email" });
   }
 
-  const isMatch = bcrypt.compareSync(password, user.password);
-  if (!isMatch) {
+  if (!bcrypt.compareSync(password, user.password)) {
     return res.status(401).json({ message: "Invalid password" });
   }
 
@@ -71,19 +62,13 @@ app.post("/login", (req, res) => {
     { expiresIn: "1h" }
   );
 
-  res.json({
-    message: "Login successful",
-    token,
-    role: user.role
-  });
+  res.json({ token, role: user.role });
 });
 
-// ----------------- AUTH MIDDLEWARE -----------------
-function authenticate(req, res, next) {
-  const authHeader = req.headers.authorization || "";
-  const token = authHeader.startsWith("Bearer ")
-    ? authHeader.slice(7)
-    : null;
+// ================= AUTH =================
+const authenticate = (req, res, next) => {
+  const auth = req.headers.authorization || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
 
   if (!token) {
     return res.status(401).json({ message: "No token provided" });
@@ -91,52 +76,36 @@ function authenticate(req, res, next) {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    const users = getUsers();
-    const user = users.find(u => u.id === payload.id);
-
-    if (!user) {
-      return res.status(401).json({ message: "Invalid token" });
-    }
-
+    const user = getUsers().find(u => u.id === payload.id);
+    if (!user) throw "";
     req.user = user;
     next();
   } catch {
-    return res.status(401).json({ message: "Invalid token" });
+    res.status(401).json({ message: "Invalid token" });
   }
-}
+};
 
-// ----------------- CURRENT USER -----------------
+// ================= PROFILE =================
 app.get("/me", authenticate, (req, res) => {
   const { id, name, email, role } = req.user;
   res.json({ id, name, email, role });
 });
 
-// ----------------- TASKS -----------------
-
-// GET tasks
+// ================= TASKS =================
 app.get("/tasks", authenticate, (req, res) => {
   const tasks = getTasks();
-  const user = req.user;
-
-  if (user.role === "admin") {
-    return res.json(tasks); // admin → all tasks
-  }
-
-  // intern → own tasks only
-  const ownerId = user.name || user.email || user.id;
-  res.json(tasks.filter(t => t.owner === ownerId));
+  if (req.user.role === "admin") return res.json(tasks);
+  res.json(tasks.filter(t => t.owner === req.user.email));
 });
 
-// CREATE task
 app.post("/tasks", authenticate, (req, res) => {
   const { title, description, priority, dueDate } = req.body || {};
+
   if (!title) {
     return res.status(400).json({ message: "Title required" });
   }
 
   const tasks = getTasks();
-  const now = new Date().toLocaleString();
-  const owner = req.user.name || req.user.email || req.user.id;
 
   const task = {
     id: Date.now(),
@@ -145,10 +114,7 @@ app.post("/tasks", authenticate, (req, res) => {
     priority: priority || "Low",
     dueDate: dueDate || "",
     status: "Pending",
-    owner,
-    ownerRole: req.user.role,
-    createdAt: now,
-    updatedAt: now
+    owner: req.user.email
   };
 
   tasks.push(task);
@@ -157,64 +123,34 @@ app.post("/tasks", authenticate, (req, res) => {
   res.status(201).json(task);
 });
 
-// UPDATE task
+// ================= UPDATE TASK (MARK DONE) =================
 app.patch("/tasks/:id", authenticate, (req, res) => {
   const tasks = getTasks();
-  const task = tasks.find(t => t.id === Number(req.params.id));
+  const taskId = Number(req.params.id);
 
+  const task = tasks.find(t => t.id === taskId);
   if (!task) {
     return res.status(404).json({ message: "Task not found" });
   }
 
-  const user = req.user;
-  const isOwner =
-    task.owner === user.name ||
-    task.owner === user.email ||
-    task.owner === user.id;
-
-  if (!isOwner && user.role !== "admin") {
+  // admin OR owner only
+  if (
+    req.user.role !== "admin" &&
+    task.owner !== req.user.email
+  ) {
     return res.status(403).json({ message: "Not allowed" });
   }
 
-  const { title, description, priority, dueDate, status } = req.body || {};
-  if (title !== undefined) task.title = title;
-  if (description !== undefined) task.description = description;
-  if (priority !== undefined) task.priority = priority;
-  if (dueDate !== undefined) task.dueDate = dueDate;
-  if (status !== undefined) task.status = status;
+  const { status } = req.body || {};
+  if (status) {
+    task.status = status;
+  }
 
-  task.updatedAt = new Date().toLocaleString();
   saveTasks(tasks);
-
   res.json(task);
 });
 
-// DELETE task
-app.delete("/tasks/:id", authenticate, (req, res) => {
-  const tasks = getTasks();
-  const task = tasks.find(t => t.id === Number(req.params.id));
-
-  if (!task) {
-    return res.status(404).json({ message: "Task not found" });
-  }
-
-  const user = req.user;
-  const isOwner =
-    task.owner === user.name ||
-    task.owner === user.email ||
-    task.owner === user.id;
-
-  if (!isOwner && user.role !== "admin") {
-    return res.status(403).json({ message: "Not allowed" });
-  }
-
-  const remaining = tasks.filter(t => t.id !== task.id);
-  saveTasks(remaining);
-
-  res.json({ message: "Task deleted" });
-});
-
-// ----------------- START SERVER -----------------
+// ================= START =================
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
