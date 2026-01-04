@@ -22,17 +22,6 @@
     "updatedAt": "2026-01-04T04:25:20.035Z"
   },
   {
-    "id": 1767500768945,
-    "title": "Filter & Sorting Validation",
-    "description": "Test filters by status, priority, due date, created date and sorting options",
-    "priority": "High",
-    "dueDate": "2026-01-14",
-    "status": "Completed",
-    "owner": "akash@gmail.com",
-    "createdAt": "2026-01-04T04:26:08.945Z",
-    "updatedAt": "2026-01-04T04:31:15.020Z"
-  },
-  {
     "id": 1767500822927,
     "title": "Activity Log Verification",
     "description": "Check activity log updates on add task and complete task actions",
@@ -42,16 +31,5 @@
     "owner": "thrisha@gmail.com",
     "createdAt": "2026-01-04T04:27:02.927Z",
     "updatedAt": "2026-01-04T04:27:02.927Z"
-  },
-  {
-    "id": 1767500856459,
-    "title": "Final Demo Preparation",
-    "description": "Prepare project demo flow and explanation for internship submission",
-    "priority": "Low",
-    "dueDate": "2026-01-13",
-    "status": "Completed",
-    "owner": "thrisha@gmail.com",
-    "createdAt": "2026-01-04T04:27:36.459Z",
-    "updatedAt": "2026-01-04T04:30:29.194Z"
   }
 ]

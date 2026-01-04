@@ -178,6 +178,29 @@ function App() {
     addLog("TASK COMPLETED", task?.title);
   };
 
+  const deleteTask = async (id) => {
+  const logged = JSON.parse(localStorage.getItem("loggedUser"));
+  const task = tasks.find(t => t.id === id);
+
+  const res = await fetch(`${API_BASE}/tasks/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${logged.token}`
+    }
+  });
+
+  if (!res.ok) {
+    alert("Delete failed");
+    return;
+  }
+
+  setTasks(prev => prev.filter(t => t.id !== id));
+
+  // Activity log (admin-only view already handled)
+  addLog("TASK DELETED", task?.title);
+};
+
+
   /* ================= FILTER + SORT ================= */
   const filteredTasks = tasks
     .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
@@ -360,9 +383,23 @@ function App() {
               <div className="cell updated">{new Date(task.updatedAt).toLocaleString()}</div>
               <div className="cell status">{task.status}</div>
               <div className="cell actions">
-                {task.status !== "Completed" && (
-                  <button className="btn done" onClick={() => markDone(task.id)}>Done</button>
-                )}
+                <div className="cell actions">
+                  {task.status !== "Completed" && (
+                    <button
+                      className="btn done"
+                      onClick={() => markDone(task.id)}
+                    >
+                      Done
+                    </button>
+                  )}
+
+                  <button
+                    className="btn delete"
+                    onClick={() => deleteTask(task.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           ))}
