@@ -31,5 +31,16 @@
     "owner": "thrisha@gmail.com",
     "createdAt": "2026-01-04T04:27:02.927Z",
     "updatedAt": "2026-01-04T04:27:02.927Z"
+  },
+  {
+    "id": 1767504795491,
+    "title": "Adding logic",
+    "description": "",
+    "priority": "Low",
+    "dueDate": "2026-01-03",
+    "status": "Completed",
+    "owner": "admin@gmail.com",
+    "createdAt": "2026-01-04T05:33:15.491Z",
+    "updatedAt": "2026-01-04T05:34:18.631Z"
   }
 ]

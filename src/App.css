@@ -670,3 +670,165 @@ body {
 }
 
 
+/* ================= LOGIN PAGE ================= */
+
+.login-box {
+  width: 360px;
+  margin: 80px auto;
+  padding: 28px 26px;
+  background: linear-gradient(135deg, #ffffff, #f9fafb);
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* Title */
+.login-box h2 {
+  margin-bottom: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Inputs */
+.login-box input,
+.login-box select {
+  width: 100%;
+  padding: 11px 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.login-box input:focus,
+.login-box select:focus {
+  outline: none;
+  border-color: #6366f1;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Login / Signin button */
+.login-box .btn.primary {
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-box .btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(79, 70, 229, 0.35);
+}
+
+/* Switch login / signup text */
+.login-box p {
+  margin-top: 14px;
+  font-size: 13px;
+  color: #4f46e5;
+  cursor: pointer;
+}
+
+.login-box p:hover {
+  text-decoration: underline;
+}
+
+/* ================= LOGIN PAGE – FINAL POLISH (ADD ONLY) ================= */
+
+/* Card glow accent */
+.login-box {
+  position: relative;
+  overflow: hidden;
+}
+
+.login-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #4f46e5,
+    #22c55e,
+    #0ea5e9
+  );
+}
+
+/* Soft inner glow */
+.login-box::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+
+/* Inputs hover polish */
+.login-box input:hover,
+.login-box select:hover {
+  border-color: #a5b4fc;
+}
+
+/* Divider text style (Login / Signup switch text) */
+.login-box p {
+  position: relative;
+}
+
+.login-box p::before,
+.login-box p::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 25%;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.login-box p::before {
+  left: 0;
+}
+
+.login-box p::after {
+  right: 0;
+}
+
+/* Button glow on focus */
+.login-box button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.35);
+}
+
+/* Slight scale animation on load (already pop exists – enhance it) */
+@keyframes loginFloat {
+  0% {
+    transform: translateY(10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.login-box {
+  animation: loginPop 0.6s ease, loginFloat 1.5s ease-in-out infinite alternate;
+}
+
+/* ================= OVERDUE TASK ================= */
+
+.task-row .cell.status {
+  font-weight: 600;
+}
+
+.task-row .cell.status:contains("OVERDUE") {
+  color: #dc2626;
+}

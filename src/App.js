@@ -54,6 +54,8 @@ function App() {
       setRole(logged.role);
       setUsername(logged.email.split("@")[0]);
       fetchTasks(logged.token);
+      setTimeout(checkOverdueTasks, 500);
+
     }
   }, []);
 
@@ -72,6 +74,30 @@ function App() {
     setActivityLogs(updated);
     localStorage.setItem("activityLogs", JSON.stringify(updated));
   };
+
+  const checkOverdueTasks = () => {
+  const today = new Date();
+
+  tasks.forEach(task => {
+    if (
+      task.dueDate &&
+      new Date(task.dueDate) < today &&
+      task.status !== "Completed" &&
+      task.status !== "OVERDUE"
+    ) {
+      // update task status locally
+      const updatedTask = { ...task, status: "OVERDUE" };
+
+      setTasks(prev =>
+        prev.map(t => (t.id === task.id ? updatedTask : t))
+      );
+
+      // activity log
+      addLog("TASK OVERDUE", task.title);
+    }
+  });
+};
+
 
   /* ================= LOGIN ================= */
   const login = async (e) => {
@@ -325,6 +351,8 @@ function App() {
               <option value="All">Status (All)</option>
               <option value="Pending">Pending</option>
               <option value="Completed">Completed</option>
+              <option value="OVERDUE">OVERDUE</option>
+
             </select>
 
             <select value={priorityFilter} onChange={e => setPriorityFilter(e.target.value)}>
