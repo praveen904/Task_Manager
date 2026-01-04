@@ -1,78 +1,57 @@
 [
   {
-    "id": 101,
-    "title": "Sample Task 1",
-    "description": "Test task",
+    "id": 1767500673522,
+    "title": "UI Polish",
+    "description": " Improve spacing, fonts, and button styles for a premium look",
     "priority": "High",
-    "status": "Completed",
-    "owner": "admin@gmail.com",
-    "ownerRole": "admin",
-    "createdAt": "today",
-    "updatedAt": "2026-01-03T14:47:35.043Z"
-  },
-  {
-    "id": 1767419881100,
-    "title": "sfvwsv",
-    "description": "svwv",
-    "priority": "Medium",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "Praveen",
-    "ownerRole": "intern",
-    "createdAt": "3/1/2026, 11:28:01 am",
-    "updatedAt": "3/1/2026, 11:28:01 am"
-  },
-  {
-    "id": 1767419894304,
-    "title": "svebv",
-    "description": "ver fq3f",
-    "priority": "Medium",
-    "dueDate": "",
-    "status": "Completed",
-    "owner": "Praveen",
-    "ownerRole": "intern",
-    "createdAt": "3/1/2026, 11:28:14 am",
-    "updatedAt": "2026-01-03T14:47:36.066Z"
-  },
-  {
-    "id": 1767436299708,
-    "title": "UI Enhancement",
-    "description": "Improve task list UI with header row, button colors, and better spacing\n",
-    "priority": "High",
-    "dueDate": "2026-01-21",
-    "status": "Completed",
-    "owner": "thrisha@gmail.com"
-  },
-  {
-    "id": 1767444603645,
-    "title": "Role Based Access Testing",
-    "description": "Verify admin can view all intern tasks and intern can view only their own tasks\n",
-    "priority": "Medium",
-    "dueDate": "2026-01-17",
-    "status": "Completed",
-    "owner": "admin@gmail.com",
-    "updatedAt": "2026-01-03T14:47:37.481Z"
-  },
-  {
-    "id": 1767445785159,
-    "title": "playing football",
-    "description": "",
-    "priority": "Medium",
-    "dueDate": "2026-01-23",
-    "status": "Completed",
+    "dueDate": "2026-01-07",
+    "status": "Pending",
     "owner": "praveen@gmail.com",
-    "createdAt": "2026-01-03T13:09:45.159Z",
-    "updatedAt": "2026-01-03T13:10:07.334Z"
+    "createdAt": "2026-01-04T04:24:33.522Z",
+    "updatedAt": "2026-01-04T04:24:33.522Z"
   },
   {
-    "id": 1767446230661,
-    "title": "carrom",
-    "description": "sdvevw",
+    "id": 1767500720035,
+    "title": "Role Based Testing",
+    "description": "Verify admin can view all tasks and intern can view only own tasks",
     "priority": "Medium",
     "dueDate": "2026-01-16",
-    "status": "Completed",
+    "status": "Pending",
     "owner": "nandhu@gmail.com",
-    "createdAt": "2026-01-03T13:17:10.661Z",
-    "updatedAt": "2026-01-03T14:47:38.609Z"
+    "createdAt": "2026-01-04T04:25:20.035Z",
+    "updatedAt": "2026-01-04T04:25:20.035Z"
+  },
+  {
+    "id": 1767500768945,
+    "title": "Filter & Sorting Validation",
+    "description": "Test filters by status, priority, due date, created date and sorting options",
+    "priority": "High",
+    "dueDate": "2026-01-14",
+    "status": "Completed",
+    "owner": "akash@gmail.com",
+    "createdAt": "2026-01-04T04:26:08.945Z",
+    "updatedAt": "2026-01-04T04:31:15.020Z"
+  },
+  {
+    "id": 1767500822927,
+    "title": "Activity Log Verification",
+    "description": "Check activity log updates on add task and complete task actions",
+    "priority": "High",
+    "dueDate": "2026-01-13",
+    "status": "Pending",
+    "owner": "thrisha@gmail.com",
+    "createdAt": "2026-01-04T04:27:02.927Z",
+    "updatedAt": "2026-01-04T04:27:02.927Z"
+  },
+  {
+    "id": 1767500856459,
+    "title": "Final Demo Preparation",
+    "description": "Prepare project demo flow and explanation for internship submission",
+    "priority": "Low",
+    "dueDate": "2026-01-13",
+    "status": "Completed",
+    "owner": "thrisha@gmail.com",
+    "createdAt": "2026-01-04T04:27:36.459Z",
+    "updatedAt": "2026-01-04T04:30:29.194Z"
   }
 ]

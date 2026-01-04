@@ -41,6 +41,11 @@ function App() {
   const [priority, setPriority] = useState("Low");
   const [dueDate, setDueDate] = useState("");
 
+  /* ================= ACTIVITY LOG (ONLY NEW FEATURE) ================= */
+  const [activityLogs, setActivityLogs] = useState(
+    JSON.parse(localStorage.getItem("activityLogs")) || []
+  );
+
   /* ================= LOAD ================= */
   useEffect(() => {
     const logged = JSON.parse(localStorage.getItem("loggedUser"));
@@ -51,6 +56,22 @@ function App() {
       fetchTasks(logged.token);
     }
   }, []);
+
+  /* ================= ACTIVITY LOG HELPER ================= */
+  const addLog = (action, taskTitle) => {
+    const log = {
+      id: Date.now(),
+      user: username,
+      role,
+      action,
+      taskTitle,
+      time: new Date().toLocaleString()
+    };
+
+    const updated = [log, ...activityLogs];
+    setActivityLogs(updated);
+    localStorage.setItem("activityLogs", JSON.stringify(updated));
+  };
 
   /* ================= LOGIN ================= */
   const login = async (e) => {
@@ -132,7 +153,12 @@ function App() {
 
     const data = await res.json();
     setTasks(prev => [...prev, data]);
-    setTitle(""); setDesc(""); setPriority("Low"); setDueDate("");
+    addLog("TASK ADDED", title);
+
+    setTitle("");
+    setDesc("");
+    setPriority("Low");
+    setDueDate("");
   };
 
   const markDone = async (id) => {
@@ -145,9 +171,46 @@ function App() {
       },
       body: JSON.stringify({ status: "Completed" })
     });
+
     const updated = await res.json();
+    const task = tasks.find(t => t.id === id);
     setTasks(tasks.map(t => (t.id === id ? updated : t)));
+    addLog("TASK COMPLETED", task?.title);
   };
+
+  /* ================= FILTER + SORT ================= */
+  const filteredTasks = tasks
+    .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
+    .filter(t => statusFilter === "All" || t.status === statusFilter)
+    .filter(t => priorityFilter === "All" || t.priority === priorityFilter)
+    .filter(t =>
+      role === "admin"
+        ? ownerFilter === "All" || t.owner?.startsWith(ownerFilter)
+        : true
+    )
+    .filter(t => {
+      if (!dueFrom && !dueTo) return true;
+      if (!t.dueDate) return false;
+      const d = new Date(t.dueDate);
+      if (dueFrom && d < new Date(dueFrom)) return false;
+      if (dueTo && d > new Date(dueTo)) return false;
+      return true;
+    })
+    .filter(t => {
+      const c = new Date(t.createdAt);
+      if (createdFrom && c < new Date(createdFrom)) return false;
+      if (createdTo && c > new Date(createdTo)) return false;
+      return true;
+    })
+    .sort((a, b) => {
+      const order = { High: 1, Medium: 2, Low: 3 };
+      if (sortBy === "dueAsc") return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
+      if (sortBy === "dueDesc") return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
+      if (sortBy === "createdAsc") return new Date(a.createdAt) - new Date(b.createdAt);
+      if (sortBy === "createdDesc") return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === "priority") return order[a.priority] - order[b.priority];
+      return 0;
+    });
 
   /* ================= LOGIN / SIGNIN ================= */
   if (!isLoggedIn) {
@@ -181,36 +244,6 @@ function App() {
     );
   }
 
-  /* ================= FILTER + SORT ================= */
-  const filteredTasks = tasks
-    .filter(t => t.title.toLowerCase().includes(search.toLowerCase()))
-    .filter(t => statusFilter === "All" || t.status === statusFilter)
-    .filter(t => priorityFilter === "All" || t.priority === priorityFilter)
-    .filter(t => role === "admin" ? ownerFilter === "All" || t.owner?.startsWith(ownerFilter) : true)
-    .filter(t => {
-      if (!dueFrom && !dueTo) return true;
-      if (!t.dueDate) return false;
-      const d = new Date(t.dueDate);
-      if (dueFrom && d < new Date(dueFrom)) return false;
-      if (dueTo && d > new Date(dueTo)) return false;
-      return true;
-    })
-    .filter(t => {
-      const c = new Date(t.createdAt);
-      if (createdFrom && c < new Date(createdFrom)) return false;
-      if (createdTo && c > new Date(createdTo)) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      const order = { High: 1, Medium: 2, Low: 3 };
-      if (sortBy === "dueAsc") return new Date(a.dueDate || 0) - new Date(b.dueDate || 0);
-      if (sortBy === "dueDesc") return new Date(b.dueDate || 0) - new Date(a.dueDate || 0);
-      if (sortBy === "createdAsc") return new Date(a.createdAt) - new Date(b.createdAt);
-      if (sortBy === "createdDesc") return new Date(b.createdAt) - new Date(a.createdAt);
-      if (sortBy === "priority") return order[a.priority] - order[b.priority];
-      return 0;
-    });
-
   /* ================= MAIN PAGE ================= */
   return (
     <>
@@ -230,7 +263,25 @@ function App() {
           </select>
           <input type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
           <button className="btn add" onClick={addTask}>+ Add Task</button>
-        </div>
+
+          {/* ================= ACTIVITY LOG (ADMIN ONLY) ================= */}
+          {role === "admin" && (
+            <div className="activity-log">
+              <h2>Activity Log</h2>
+
+              {activityLogs.length === 0 && <p>No activity yet</p>}
+
+              {activityLogs.map(log => (
+                <div key={log.id} className="log-item">
+                  <b>{log.action}</b> – {log.taskTitle}<br />
+                  <small>
+                    {log.user} ({log.role}) • {log.time}
+                  </small>
+                </div>
+              ))}
+            </div>
+          )}
+          </div>
 
         <div className="right">
           <h2>Task List</h2>
@@ -260,7 +311,6 @@ function App() {
               <option value="Low">Low</option>
             </select>
 
-            {/* DATE FILTERS WITH LABEL */}
             <div className="date-filter">
               <span>Due From</span>
               <input type="date" value={dueFrom} onChange={e => setDueFrom(e.target.value)} />
@@ -318,6 +368,8 @@ function App() {
           ))}
         </div>
       </div>
+
+      
     </>
   );
 }
