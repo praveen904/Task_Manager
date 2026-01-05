@@ -1,16 +1,5 @@
 [
   {
-    "id": 1767500673522,
-    "title": "UI Polish",
-    "description": " Improve spacing, fonts, and button styles for a premium look",
-    "priority": "High",
-    "dueDate": "2026-01-07",
-    "status": "Pending",
-    "owner": "praveen@gmail.com",
-    "createdAt": "2026-01-04T04:24:33.522Z",
-    "updatedAt": "2026-01-04T04:24:33.522Z"
-  },
-  {
     "id": 1767500720035,
     "title": "Role Based Testing",
     "description": "Verify admin can view all tasks and intern can view only own tasks",
@@ -22,17 +11,6 @@
     "updatedAt": "2026-01-04T04:25:20.035Z"
   },
   {
-    "id": 1767500822927,
-    "title": "Activity Log Verification",
-    "description": "Check activity log updates on add task and complete task actions",
-    "priority": "High",
-    "dueDate": "2026-01-13",
-    "status": "Pending",
-    "owner": "thrisha@gmail.com",
-    "createdAt": "2026-01-04T04:27:02.927Z",
-    "updatedAt": "2026-01-04T04:27:02.927Z"
-  },
-  {
     "id": 1767504795491,
     "title": "Adding logic",
     "description": "",
@@ -42,5 +20,38 @@
     "owner": "admin@gmail.com",
     "createdAt": "2026-01-04T05:33:15.491Z",
     "updatedAt": "2026-01-04T05:34:18.631Z"
+  },
+  {
+    "id": 1767585742025,
+    "title": "Upgrading CSS",
+    "description": "",
+    "priority": "High",
+    "dueDate": "2026-01-05",
+    "status": "Pending",
+    "owner": "praveen@gmail.com",
+    "createdAt": "2026-01-05T04:02:22.025Z",
+    "updatedAt": "2026-01-05T04:02:22.025Z"
+  },
+  {
+    "id": 1767622454887,
+    "title": "UI Polish",
+    "description": "",
+    "priority": "High",
+    "dueDate": "2026-01-04",
+    "status": "Pending",
+    "owner": "admin@gmail.com",
+    "createdAt": "2026-01-05T14:14:14.887Z",
+    "updatedAt": "2026-01-05T14:14:14.887Z"
+  },
+  {
+    "id": 1767622846924,
+    "title": "Test Work flow",
+    "description": "",
+    "priority": "Medium",
+    "dueDate": "2026-01-04",
+    "status": "Completed",
+    "owner": "admin@gmail.com",
+    "createdAt": "2026-01-05T14:20:46.924Z",
+    "updatedAt": "2026-01-05T14:21:14.631Z"
   }
 ]

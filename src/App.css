@@ -1,4 +1,4 @@
-/* ========== VARIABLES ========== */
+
 :root {
   /* Colors */
   --color-primary: #4f46e5;
@@ -286,7 +286,7 @@ body {
   }
 }
 
-/* ========= BUTTON COLOR OVERRIDES ONLY ========= */
+
 
 /* Primary buttons (Login / main) */
 .btn.primary,
@@ -317,7 +317,7 @@ body {
   color: #ffffff;
 }
 
-/* ========= STYLISH WELCOME TEXT ========= */
+
 
 .welcome {
   font-family: "Inter", sans-serif;
@@ -339,7 +339,6 @@ body {
   border-radius: 999px;
 }
 
-/* ========= PREMIUM LOGIN PAGE ========= */
 
 .login-box {
   width: 380px;
@@ -435,7 +434,7 @@ body {
   color: #22c55e;
 }
 
-/* ================= PREMIUM MAIN PAGE ================= */
+
 
 /* ---------- HEADER ---------- */
 .header {
@@ -583,7 +582,7 @@ body {
 .date-filter span {
   font-size: 12px;
   font-weight: 600;
-  color: #374151; /* slate-700 */
+  color: #374151; 
   letter-spacing: 0.3px;
 }
 
@@ -610,7 +609,7 @@ body {
 
 /* Push Activity Log slightly down from Add Task button */
 .left .activity-log {
-  margin-top: 30px;   /* ~2 lines gap */
+  margin-top: 30px;   
 }
 
 .left .activity-log h2 {
@@ -620,9 +619,9 @@ body {
 /* ================= ACTIVITY LOG ================= */
 
 .left .activity-log {
-  margin-top: 20px;              /* Add Task keela gap */
+  margin-top: 20px;              
   padding: 14px 16px;
-  background: #f8fafc;           /* soft light background */
+  background: #f8fafc;           
   border-radius: 12px;
   border: 1px solid #e5e7eb;
 }
@@ -823,7 +822,7 @@ body {
   animation: loginPop 0.6s ease, loginFloat 1.5s ease-in-out infinite alternate;
 }
 
-/* ================= OVERDUE TASK ================= */
+
 
 .task-row .cell.status {
   font-weight: 600;
@@ -831,4 +830,16 @@ body {
 
 .task-row .cell.status:contains("OVERDUE") {
   color: #dc2626;
+}
+
+/* ================= OVERDUE TEXT ONLY ================= */
+
+.cell.status {
+  font-weight: 500;
+}
+
+/* Overdue text highlight */
+.cell.status.overdue-text {
+  color: #dc2626;       /* red */
+  font-weight: 700;
 }

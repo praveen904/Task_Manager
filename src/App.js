@@ -54,7 +54,7 @@ function App() {
       setRole(logged.role);
       setUsername(logged.email.split("@")[0]);
       fetchTasks(logged.token);
-      setTimeout(checkOverdueTasks, 500);
+      
 
     }
   }, []);
@@ -75,28 +75,28 @@ function App() {
     localStorage.setItem("activityLogs", JSON.stringify(updated));
   };
 
-  const checkOverdueTasks = () => {
+  const checkOverdueTasks = (taskList) => {
   const today = new Date();
+  today.setHours(0, 0, 0, 0); // ignore time
 
-  tasks.forEach(task => {
+  const updatedTasks = taskList.map(task => {
     if (
       task.dueDate &&
       new Date(task.dueDate) < today &&
       task.status !== "Completed" &&
       task.status !== "OVERDUE"
     ) {
-      // update task status locally
-      const updatedTask = { ...task, status: "OVERDUE" };
-
-      setTasks(prev =>
-        prev.map(t => (t.id === task.id ? updatedTask : t))
-      );
-
       // activity log
       addLog("TASK OVERDUE", task.title);
+
+      return { ...task, status: "OVERDUE" };
     }
+    return task;
   });
+
+  setTasks(updatedTasks);
 };
+
 
 
   /* ================= LOGIN ================= */
@@ -161,7 +161,13 @@ function App() {
       headers: { Authorization: `Bearer ${token}` }
     });
     const data = await res.json();
-    setTasks(Array.isArray(data) ? data : []);
+    if (Array.isArray(data)) {
+  setTasks(data);
+  checkOverdueTasks(data);   // 🔥 KEY LINE
+} else {
+  setTasks([]);
+}
+
   };
 
   const addTask = async () => {
@@ -409,7 +415,14 @@ function App() {
               <div className="cell owner">{task.owner.split("@")[0]}</div>
               <div className="cell created">{new Date(task.createdAt).toLocaleString()}</div>
               <div className="cell updated">{new Date(task.updatedAt).toLocaleString()}</div>
-              <div className="cell status">{task.status}</div>
+              <div
+  className={`cell status ${
+    task.status === "OVERDUE" ? "overdue-text" : ""
+  }`}
+>
+  {task.status}
+</div>
+
               <div className="cell actions">
                 <div className="cell actions">
                   {task.status !== "Completed" && (
