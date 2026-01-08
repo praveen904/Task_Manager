@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./App.css";
 
-const API_BASE = "http://localhost:8080";
+const API_BASE = "https://task-manager-backend-2gmn.onrender.com";
 
 function App() {
   /* ================= AUTH ================= */
