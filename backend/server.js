@@ -8,14 +8,16 @@ const jwt = require("jsonwebtoken");
 const app = express();
 
 // ================= CONFIG =================
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const JWT_SECRET = "mysecretkey";
 
 // ================= FILE PATHS =================
-const usersFile = path.join(__dirname, "data", "user.json");
-const tasksFile = path.join(__dirname, "data", "tasks.json");
+const usersFile = path.join(__dirname, "user.json");
+const tasksFile = path.join(__dirname, "tasks.json");
+
 
 // ================= MIDDLEWARE =================
+const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 
@@ -169,6 +171,8 @@ app.delete("/tasks/:id", authenticate, (req, res) => {
 });
 
 // ================= START =================
+
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port", PORT);
 });
